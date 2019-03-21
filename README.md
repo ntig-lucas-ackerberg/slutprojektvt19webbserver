@@ -5,7 +5,7 @@
 ## 1. Projektbeskrivning
 IsThisBullshit? En social plattform där man kan lägga upp inlägg och fråga webbsidans användare om blank är bullshit eller ej. Du kan endast tumma ner inlägg. På sidan så kan man se dagens bullshitter samt dagens mest nertummade inlägg.
 ## 2. Vyer (sidor)
-My Profile
+My Profile \n
 Edit profile
 Blank's profile 
 Home (flöde)
