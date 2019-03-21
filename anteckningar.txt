@@ -1,0 +1,12 @@
+IsThisBullshit?
+
+följknapp - jag följer denna personen så kan kan få upp hens posts på min sida.
+dislike button - i disapprove of this.
+IsThisBullshit - 
+dagens bullshitter - 
+
+Kommentarer - antalet dislikes, comment_author, comment_text
+Posts - posttitle, postauthor, postid, dislikecounter
+Användare - Id, Användarnamn, Lösenord
+
+
