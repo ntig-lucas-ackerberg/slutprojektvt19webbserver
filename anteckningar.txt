@@ -7,6 +7,6 @@ dagens bullshitter -
 
 Kommentarer - antalet dislikes, comment_author, comment_text
 Posts - posttitle, postauthor, postid, dislikecounter
-Användare - Id, Användarnamn, Lösenord
+User - id, user, password
 
 

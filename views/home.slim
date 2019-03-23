@@ -2,4 +2,8 @@
     .myprofilelink
         a href="/profile/#{session[:id]}" My profile
 -else
-/  Varje post blabla
+- posts.each do |element|
+        article.post
+                h2 = element["posttitle"]
+                p = element["posttext"]
+                a href="/profile/#{element["author_id"]}" = "#{element["username"]}'s posts"

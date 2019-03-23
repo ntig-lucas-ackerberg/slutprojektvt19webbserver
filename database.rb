@@ -1,0 +1,1 @@
+# INSERT INTO comments(comment_autor, comment_text) VALUES (4,'')
