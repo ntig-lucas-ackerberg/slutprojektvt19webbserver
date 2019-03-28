@@ -10,9 +10,9 @@ html lang="en"
     body
         .wrapper
             header
-                form.yeet action="/login" method="post"
-                    input type="text" name="Username" placeholder="Användarnamn" require="required"
-                    input type="password" name="Password" placeholder="Lösenord" require="required"
+                form.login action="/login" method="post"
+                    input type="text" name="username" placeholder="Username" require="required"
+                    input type="password" name="password" placeholder="Password" require="required"
                     input type="submit" value="Logga in"
                 p Don't have an account?
                 a href="/signup" Register here

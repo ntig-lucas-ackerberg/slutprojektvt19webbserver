@@ -2,30 +2,37 @@ require 'sinatra'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
+require 'securerandom'
+require 'byebug'
 enable :sessions
+require_relative 'database.rb' 
 
 get('/') do
-    db = SQLite3::Database.new('db/db.db')
-    db.results_as_hash = true
-    posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author")
-    slim(:home, locals:{posts: posts})
+    home(params)
+end
+
+post('/logout') do
+    session[:username] = nil
+    session[:password] = nil
+    session.destroy
+    redirect('/')
+end
+
+get('/newpost') do
+    slim(:newpost)
 end
 
 post('/login') do
-    db = SQLite3::Database.new("db/db.db")
-    db.results_as_hash = true
-    password = db.execute('SELECT password, id FROM user WHERE username=?', params["username"])
-    if password != []
-        if (BCrypt::Password.new(password[0][0]) == params["password"]) == true
-            session[:username] = params["username"]
-            session[:id] = password[0]["id"]
-            redirect('/')
-        else
-            redirect('/loginfail')
-        end
+    if login(params) == true
+        redirect('/')
     else
-        redirect('/loginfail')
+        session[:wrong] = true
+        redirect('/')
     end
+end
+
+get('/profile/:id') do
+    profile(params)
 end
 
 get('/signup') do
@@ -33,12 +40,16 @@ get('/signup') do
 end
 
 post('/signup') do
-    db = SQLite3::Database.new("db/db.db")
-    db.results_as_hash = true
-    if params["username"] != "" && params["password"]
-        db.execute('INSERT INTO user(username, password) VALUES (?, ?)', params["username"], BCrypt::Password.create(params["password"]))
+    if signup(params) == true
         redirect('/')
     else
+        session[:fillout] = true
         redirect('/signup')
     end
+end
+
+post('/newpost') do
+    db = SQLite3::Database.new('db/db.db')
+    db.execute("INSERT INTO posts(post_title, post_text, author_id ) VALUES (?,?,?)",params['post_title'],params['post_text'],session[:id].to_i )
+    redirect("/profile/#{session[:id]}")
 end

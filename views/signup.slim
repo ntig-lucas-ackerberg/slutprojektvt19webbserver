@@ -1,3 +1,5 @@
+- if session[:fillout] != nil
+    p Please fill out both fields
 form.b action="/signup" method="post"
     input type="text" name="username" placeholder="Username" require="required"
     input type="password" name="password" placeholder="Password" require="required"
