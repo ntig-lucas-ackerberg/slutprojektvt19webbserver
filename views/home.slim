@@ -10,3 +10,8 @@
                 h2 = element["post_title"]
                 p = element["post_text"]
                 a href="/profile/#{element["author_id"]}" = "#{element["username"]}'s posts"
+                i class="material-icons" onclick="toggleMenu()" insert_comment
+                .comments
+                        h4 Comment post
+                        textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
+                        input type="submit" value="Comment"

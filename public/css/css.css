@@ -16,3 +16,19 @@ body {
 form.login {
     height: 25px;
 }
+
+.post {
+    outline: 2px;
+    outline-color: white;
+}
+
+.comments {
+    transform: translateX(-100%);
+    transition: transform ease-out 10s;
+    display: block;
+}
+
+.dropdown {
+    transform: translateX(0%);
+    transition: transform ease-out .1s;
+}

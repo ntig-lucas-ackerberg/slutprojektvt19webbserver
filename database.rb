@@ -26,7 +26,10 @@ end
 def profile(params)
     db = SQLite3::Database.new('db/db.db')
     db.results_as_hash = true
-    posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id=?", session[:id])
+    # posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id= ?", 5)
+    posts = db.execute("SELECT * from posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author")
+    p session[:id]
+    p posts
     slim(:profile, locals:{posts: posts})
 end
 
