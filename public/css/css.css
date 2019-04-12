@@ -24,11 +24,11 @@ form.login {
 
 .comments {
     transform: translateX(-100%);
-    transition: transform ease-out 10s;
+    transition: transform ease-out 0.7s;
     display: block;
 }
 
 .dropdown {
     transform: translateX(0%);
-    transition: transform ease-out .1s;
+    transition: transform ease-out 0.7s;
 }
