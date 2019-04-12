@@ -1,5 +1,7 @@
 -if session[:username] != nil
     p.myposts My bullshit:
+    div.homediv
+        a href="/" Home
     a.newpost href="/newpost" New bullshit
     .editcredentials
         a.editprofile href="/editprofile" Edit credentials    
@@ -7,10 +9,10 @@
         - posts.each do |element|
             article.blogpost
                 div.controls
-                    a href="/edit/#{element["id"]}"
+                    a href="/edit/#{element["post_id"]}"
                         button
                             i.material-icons colorize
-                        form action="/#{element["id"]}/delete" method="POST"
+                        form action="/#{element["post_id"]}/delete" method="POST"
                             button type="submit" value=""
                                 i.material-icons cancel
                 h2 = element["post_title"]

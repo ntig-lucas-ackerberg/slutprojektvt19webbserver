@@ -1,8 +1,15 @@
+html {
+    height: 100%;
+}
+
 body {
     margin: 0;
-    background: linear-gradient(to right, rgba(6,0,184,1) 0%, rgba(12,14,43,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0600b8', endColorstr='#0c0e2b', GradientType=1 );
-    
+    /* background: linear-gradient(to right, rgba(6,0,184,1) 0%, rgba(12,14,43,1) 100%); */
+    background: #a90329;
+    background: -moz-linear-gradient(top, #a90329 0%, #8f0222 38%, #6d0019 79%, #a90329 100%);
+    background: -webkit-linear-gradient(top, #a90329 0%,#8f0222 38%,#6d0019 79%,#a90329 100%);
+    background: linear-gradient(to bottom, #a90329 0%,#8f0222 38%,#6d0019 79%,#a90329 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#a90329',GradientType=0 );
 }
 .wrapper{
     margin-left: auto;
@@ -25,10 +32,16 @@ form.login {
 .comments {
     transform: translateX(-100%);
     transition: transform ease-out 0.7s;
+    position: absolute;
     display: block;
 }
 
 .dropdown {
     transform: translateX(0%);
     transition: transform ease-out 0.7s;
+}
+
+.comment{
+    background: white;
+    padding: 25px;
 }

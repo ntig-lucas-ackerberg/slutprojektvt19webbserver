@@ -49,7 +49,16 @@ post('/signup') do
 end
 
 post('/newpost') do
-    db = SQLite3::Database.new('db/db.db')
-    db.execute("INSERT INTO posts(post_title, post_text, author_id ) VALUES (?,?,?)",params['post_title'],params['post_text'],session[:id].to_i )
+    postpost(params)
     redirect("/profile/#{session[:id]}")
+end
+
+post('/:id/delete') do
+    deletepost(params)
+    redirect("/profile/#{session[:id]}")
+end
+
+post('/') do 
+    insertcomment(params)
+    redirect('/')
 end
