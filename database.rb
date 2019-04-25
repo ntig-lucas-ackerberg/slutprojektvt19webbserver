@@ -30,8 +30,6 @@ def profile(params)
     db.results_as_hash = true
     # posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id= ?", 5)
     posts = db.execute("SELECT * from posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id =?", session[:id])
-    p session[:id]
-    p posts
     slim(:profile, locals:{posts: posts})
 end
 
@@ -59,4 +57,16 @@ end
 def insertcomment(params)
     db = getdb()
     db.execute("INSERT INTO comments(comment_author, comment_text, dislikecount ) VALUES (?,?,?)", session[:id], params["comment_text"], 0 )
+end
+
+def updatepost(params)
+    db = getdb()
+    db.execute("UPDATE posts SET post_title = ?,post_text = ? WHERE post_id = ?",params["post_title"],params["post_text"],params["post_id"] )
+end
+
+def editpost(params)
+    db = getdb()
+    db.results_as_hash = true
+    result = db.execute("SELECT post_id, post_title, post_text, author_id FROM posts WHERE post_id = ?", params["post_id"])
+    slim(:editpost, locals:{result: result})
 end

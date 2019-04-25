@@ -62,3 +62,12 @@ post('/') do
     insertcomment(params)
     redirect('/')
 end
+
+post('/edit/:id/update') do 
+    updatepost(params)
+    redirect("/profile/#{session[:id]}")
+end
+
+get('/edit/:id') do 
+    editpost(params)
+end
