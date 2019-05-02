@@ -53,21 +53,43 @@ post('/newpost') do
     redirect("/profile/#{session[:id]}")
 end
 
-post('/:id/delete') do
+post('/:post_id/delete') do
     deletepost(params)
     redirect("/profile/#{session[:id]}")
 end
 
-post('/') do 
+post('/submitcomment/:post_id') do 
     insertcomment(params)
     redirect('/')
 end
 
-post('/edit/:id/update') do 
+post('/edit/:post_id/update') do 
     updatepost(params)
     redirect("/profile/#{session[:id]}")
 end
 
-get('/edit/:id') do 
+get('/edit/:post_id') do 
     editpost(params)
 end
+
+post('/likepost/:post_id') do
+    likepost(params)
+    redirect('/')
+end
+
+post('/dislikepost/:post_id') do
+    dislikepost(params)
+    redirect('/')
+end
+
+post('/likecomment/:comment_id') do
+    likecomment(params)
+    redirect('/')
+end
+
+post('/dislikecomment/:comment_id') do
+    dislikecomment(params)
+    redirect('/')
+end
+
+

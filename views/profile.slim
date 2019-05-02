@@ -1,10 +1,10 @@
 -if session[:username] != nil
-    p.myposts My bullshit:
     div.homediv
         a href="/" Home
     a.newpost href="/newpost" New bullshit
     .editcredentials
         a.editprofile href="/editprofile" Edit credentials    
+    h2.myposts My bullshit:
     .post
         - posts.each do |element|
             article.blogpost

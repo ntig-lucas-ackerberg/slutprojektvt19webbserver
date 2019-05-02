@@ -11,6 +11,10 @@ body {
     background: linear-gradient(to bottom, #a90329 0%,#8f0222 38%,#6d0019 79%,#a90329 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#a90329',GradientType=0 );
 }
+
+a {
+    color: black;
+}
 .wrapper{
     margin-left: auto;
     margin-right: auto;
@@ -44,4 +48,26 @@ form.login {
 .comment{
     background: white;
     padding: 25px;
+}
+
+.comment1 {
+    background-color: #a90329;
+    border: 2px solid white;
+    outline-style: solid;
+    outline-color: whitesmoke;
+    padding: 20px;
+    margin: 20px;
+}
+
+button.like {
+    background-color: greenyellow;
+    margin: 5px;
+}
+
+button.dislike {
+    background-color: red;
+}
+
+article.post {
+    padding: 40px;
 }

@@ -1,6 +1,7 @@
 def getdb()
     return SQLite3::Database.new("db/db.db")
 end
+
 def login(params)
     db = getdb()
     db.results_as_hash = true
@@ -21,15 +22,22 @@ end
 def home(params)
     db = getdb()
     db.results_as_hash = true
-    posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author")
-    slim(:home, locals:{posts: posts})
+    posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
+    comments = db.execute("SELECT * FROM comments WHERE post_id IN=", 10)
+    slim(:home, locals:{posts: posts, comments: comments})
 end
 
 def profile(params)
     db = getdb()
     db.results_as_hash = true
+    query = <<-SQL
+    SELECT * from posts 
+        INNER JOIN user on user.id = posts.author_id 
+        INNER JOIN comments on user.id = comments.comment_author 
+        WHERE author_id =?
+    SQL
+    posts = db.execute(query, params["id"] )
     # posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id= ?", 5)
-    posts = db.execute("SELECT * from posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id =?", session[:id])
     slim(:profile, locals:{posts: posts})
 end
 
@@ -51,12 +59,12 @@ end
 
 def deletepost(params)
     db = getdb()
-    db.execute("DELETE FROM posts WHERE post_id = (?)", params["id"])
+    db.execute("DELETE FROM posts WHERE post_id = (?)", params["post_id"])
 end
 
 def insertcomment(params)
     db = getdb()
-    db.execute("INSERT INTO comments(comment_author, comment_text, dislikecount ) VALUES (?,?,?)", session[:id], params["comment_text"], 0 )
+    db.execute("INSERT INTO comments(comment_author, comment_text, dislikecount, post_id ) VALUES (?,?,?,?)", session[:id], params["comment_text"], 0, params["post_id"])
 end
 
 def updatepost(params)
@@ -70,3 +78,35 @@ def editpost(params)
     result = db.execute("SELECT post_id, post_title, post_text, author_id FROM posts WHERE post_id = ?", params["post_id"])
     slim(:editpost, locals:{result: result})
 end
+
+def likepost(params)
+    db = getdb()
+    result = db.execute("UPDATE posts SET dislikecounter = dislikecounter + 1) WHERE post_id = ?", params["post_id"], params["post_id"] )
+end
+
+def dislikepost(params)
+    db = getdb()
+    result = db.execute("UPDATE posts SET dislikecounter = ((SELECT dislikecounter FROM posts WHERE post_id=?) - 1) WHERE post_id = ?", params["post_id"], params["post_id"] )
+end
+
+def likecomment(params)
+    db = getdb()
+    result = db.execute("UPDATE comments SET dislikecount = ((SELECT dislikecount FROM comments WHERE comment_id=?) + 1) WHERE comment_id = ?", params["comment_id"], params["comment_id"] )
+end
+
+def dislikecomment(params)
+    db = getdb()
+    result = db.execute("UPDATE comments SET dislikecount = ((SELECT dislikecount FROM comments WHERE comment_id=?) - 1) WHERE comment_id = ?", params["comment_id"], params["comment_id"] )
+end
+
+
+
+# def get_posts_with_comments()
+#     db = getdb()
+#     posts = db.execute("SELECT * FROM comments WHERE post_id IN ) VALUES (?)", params["post_id"]
+#     comments = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
+
+#     posts.map do |post|
+#         post["comments"] = 
+#     end
+# end
