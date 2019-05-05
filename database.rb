@@ -19,25 +19,27 @@ def login(params)
     end
 end
 
-def home(params)
-    db = getdb()
-    db.results_as_hash = true
-    posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
-    comments = db.execute("SELECT * FROM comments WHERE post_id IN=", 10)
-    slim(:home, locals:{posts: posts, comments: comments})
-end
+# def home(params)
+#     db = getdb()
+#     db.results_as_hash = true
+#     posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
+#     comments = db.execute("SELECT * FROM comments")
+#     # session[:postcomment] = posts[0]["post_id"]
+#     slim(:home, locals:{posts: posts, comments: comments})
+# end
 
 def profile(params)
     db = getdb()
     db.results_as_hash = true
-    query = <<-SQL
-    SELECT * from posts 
-        INNER JOIN user on user.id = posts.author_id 
-        INNER JOIN comments on user.id = comments.comment_author 
-        WHERE author_id =?
-    SQL
-    posts = db.execute(query, params["id"] )
-    # posts = db.execute("SELECT comments.id, comments.comment_author, comments.comment_text, comments.dislikecount, user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id INNER JOIN comments on user.id = comments.comment_author WHERE author_id= ?", 5)
+    # query = <<-SQL
+    # SELECT * from posts 
+    #     INNER JOIN user on user.id = posts.author_id  
+    #     WHERE author_id =?
+    # SQL
+    # posts = db.execute(query, params["id"] )
+    posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id WHERE posts.author_id=?", params["id"])
+    p params["id"]
+    p session[:id]
     slim(:profile, locals:{posts: posts})
 end
 
@@ -99,14 +101,15 @@ def dislikecomment(params)
     result = db.execute("UPDATE comments SET dislikecount = ((SELECT dislikecount FROM comments WHERE comment_id=?) - 1) WHERE comment_id = ?", params["comment_id"], params["comment_id"] )
 end
 
-
-
-# def get_posts_with_comments()
-#     db = getdb()
-#     posts = db.execute("SELECT * FROM comments WHERE post_id IN ) VALUES (?)", params["post_id"]
-#     comments = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
-
-#     posts.map do |post|
-#         post["comments"] = 
-#     end
-# end
+def get_posts_with_comments()
+    db = getdb()
+    db.results_as_hash = true
+    comments = db.execute("SELECT * FROM comments")
+    posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
+    posts.each do |post|
+        post["comments"] = comments.select do |comment|
+            comment["post_id"] == post["post_id"]
+            end
+        end
+    return posts
+end

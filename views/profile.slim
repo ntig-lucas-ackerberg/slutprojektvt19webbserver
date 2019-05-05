@@ -1,4 +1,4 @@
--if session[:username] != nil
+-if session[:id] == params["id"].to_i
     div.homediv
         a href="/" Home
     a.newpost href="/newpost" New bullshit

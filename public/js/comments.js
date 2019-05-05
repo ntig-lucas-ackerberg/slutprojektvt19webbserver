@@ -1,6 +1,7 @@
 function toggleMenu(event){
-    console.log(event.target.attributes["data-post-id"].value)
-    var element = document.querySelector(".comments");
+    let id = event.target.attributes["data-post-id"].value
+    console.log(id)
+    var element = document.querySelector(".comments[data-post-id=\""+id+"\"]");
     element.classList.toggle("dropdown")
     // console.log(element.attributes["data-post-id"].value)
     // element = document.createElement("article")

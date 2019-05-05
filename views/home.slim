@@ -9,33 +9,32 @@
         h4 Wrong Username or Password
 - posts.each do |element|
     article.post
-            h2 = element["post_title"]
-            p = element["post_text"]
-            p = "Like counter: #{element["dislikecounter"]}"
-            -if session[:username] != nil
-                form action="/likepost/#{element["post_id"]}" method="post"
-                    button.like type="submit" onclick="alert('You liked this post')"
-                        p like
-                form action="/dislikepost/#{element["post_id"]}" method="post"
-                    button.dislike type="submit" onclick="alert('You disliked this post')"
-                        p dislike
-            -if element["comment_id"] != nil
-                -comments.each do |element|
-                    .comment1
-                        p = element["comment_text"]
-                        h3 = "Like counter: #{element["dislikecount"]}"
-                    -if session[:username] != nil
-                        form action="/likecomment/#{element["comment_id"]}" method="post"
-                            button.like type="submit" onclick="alert('You liked this comment')"
-                                p like
-                        form action="/dislikecomment/#{element["comment_id"]}" method="post"
-                            button.dislike type="submit" onclick="alert('You disliked this comment')"
-                                p dislike
-                a href="/profile/#{element["author_id"]}" = "By #{element["username"]}"
-            - if session[:username] != nil
-                    i.show-comment-btn class="material-icons" data-post-id="#{element["post_id"]}" insert_comment
-                    .comments 
-                        form action="/submitcomment/#{element["post_id"]}" method="post"
-                            h4 Comment post
-                            textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
-                            input type="submit" value="Comment"
+        h2 = element["post_title"]
+        p = element["post_text"]
+        p = "Like counter: #{element["dislikecounter"]}"
+        a href="/profile/#{element["author_id"]}" = "By #{element["username"]}"
+        -if session[:username] != nil
+            form action="/likepost/#{element["post_id"]}" method="post"
+                button.like type="submit" onclick="alert('You liked this post')"
+                    p like
+            form action="/dislikepost/#{element["post_id"]}" method="post"
+                button.dislike type="submit" onclick="alert('You disliked this post')"
+                    p dislike
+        - if session[:username] != nil
+                i.show-comment-btn class="material-icons" data-post-id="#{element["post_id"]}" insert_comment
+                .comments data-post-id="#{element["post_id"]}"
+                    form action="/submitcomment/#{element["post_id"]}" method="post"
+                        h4 Comment post
+                        textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
+                        input type="submit" value="Comment"
+        .comment1
+            - element["comments"].each do |comment|
+                p = comment["comment_text"]
+                h3 = "Like counter: #{comment["dislikecount"]}"
+                -if session[:username] != nil
+                    form action="/likecomment/#{comment["comment_id"]}" method="post"
+                        button.like type="submit" onclick="alert('You liked this comment')"
+                            p like
+                    form action="/dislikecomment/#{comment["comment_id"]}" method="post"
+                        button.dislike type="submit" onclick="alert('You disliked this comment')"
+                            p dislike

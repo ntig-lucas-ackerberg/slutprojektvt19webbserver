@@ -8,7 +8,8 @@ enable :sessions
 require_relative 'database.rb' 
 
 get('/') do
-    home(params)
+    posts = get_posts_with_comments()
+    slim(:home, locals:{posts: posts})
 end
 
 post('/logout') do
