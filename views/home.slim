@@ -24,9 +24,15 @@
                 i.show-comment-btn class="material-icons" data-post-id="#{element["post_id"]}" insert_comment
                 .comments data-post-id="#{element["post_id"]}"
                     form action="/submitcomment/#{element["post_id"]}" method="post"
-                        h4 Comment post
-                        textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
-                        input type="submit" value="Comment"
+                        - if session[:fillouterror] == true
+                            p Please fill out the field.
+                            h4 Comment post
+                            textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
+                            input type="submit" value="Comment"
+                        - else 
+                            h4 Comment post
+                            textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
+                            input type="submit" value="Comment"
         .comment1
             - element["comments"].each do |comment|
                 p = comment["comment_text"]

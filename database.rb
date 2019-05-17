@@ -1,5 +1,6 @@
 module Mymodel
-    
+
+    #Connects to database
     def getdb()
         return SQLite3::Database.new("db/db.db")
     end
@@ -10,9 +11,7 @@ module Mymodel
         password = db.execute('SELECT password, id FROM user WHERE username=?', params["username"])
         if password != []
             if (BCrypt::Password.new(password[0][0]) == params["password"]) == true
-                session[:username] = params["username"]
-                session[:id] = password[0]["id"]
-                return true
+                return password[0]["id"]
             else
                 return false
             end
@@ -20,15 +19,6 @@ module Mymodel
             return false
         end
     end
-
-    # def home(params)
-    #     db = getdb()
-    #     db.results_as_hash = true
-    #     posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id")
-    #     comments = db.execute("SELECT * FROM comments")
-    #     # session[:postcomment] = posts[0]["post_id"]
-    #     slim(:home, locals:{posts: posts, comments: comments})
-    # end
 
     def profile(params)
         db = getdb()
@@ -40,9 +30,6 @@ module Mymodel
         # SQL
         # posts = db.execute(query, params["id"] )
         posts = db.execute("SELECT user.username, posts.post_id, post_title, post_text, posts.dislikecounter, author_id FROM posts INNER JOIN user on user.id = posts.author_id WHERE posts.author_id=?", params["id"])
-        p params["id"]
-        p session[:id]
-        slim(:profile, locals:{posts: posts})
     end
 
     def signup(params)
@@ -56,9 +43,18 @@ module Mymodel
         end
     end
 
-    def postpost(params)
+    def validate(params)
+        params.values.each do |element|
+            if element == " " or ""
+                return false
+            end
+        end
+        return true
+    end
+
+    def postpost(params, user_id)
         db = getdb()
-        db.execute("INSERT INTO posts(post_title, post_text, author_id ) VALUES (?,?,?)",params["post_title"],params["post_text"],session[:id])
+        db.execute("INSERT INTO posts(post_title, post_text, author_id ) VALUES (?,?,?)",params["post_title"],params["post_text"],user_id)
     end
 
     def deletepost(params)
@@ -66,21 +62,20 @@ module Mymodel
         db.execute("DELETE FROM posts WHERE post_id = (?)", params["post_id"])
     end
 
-    def insertcomment(params)
+    def insertcomment(params, user_id)
         db = getdb()
-        db.execute("INSERT INTO comments(comment_author, comment_text, dislikecount, post_id ) VALUES (?,?,?,?)", session[:id], params["comment_text"], 0, params["post_id"])
+        db.execute("INSERT INTO comments(comment_author, comment_text, dislikecount, post_id ) VALUES (?,?,?,?)", user_id, params["comment_text"], 0, params["post_id"])
     end
 
     def updatepost(params)
         db = getdb()
-        db.execute("UPDATE posts SET post_title = ?,post_text = ? WHERE post_id = ?",params["post_title"],params["post_text"],params["post_id"] )
+        result = db.execute("UPDATE posts SET post_title = ?,post_text = ? WHERE post_id = ?",params["post_title"],params["post_text"],params["post_id"] )
     end
 
     def editpost(params)
         db = getdb()
         db.results_as_hash = true
-        result = db.execute("SELECT post_id, post_title, post_text, author_id FROM posts WHERE post_id = ?", params["post_id"])
-        slim(:editpost, locals:{result: result})
+        db.execute("SELECT post_id, post_title, post_text, author_id FROM posts WHERE post_id = ?", params["post_id"])
     end
 
     def likepost(params)

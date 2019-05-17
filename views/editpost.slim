@@ -1,8 +1,19 @@
--result.each do |element|
-    form action="/edit/#{element["post_id"]}/update" method="POST"
-        input name="post_title" value="#{element["post_title"]}" type="text"
-        textarea name="post_text" cols="30" rows="50" = element["post_text"]
-        input type="submit" value="Update"
-    form action="/#{element["post_id"]}/delete" method="POST"
-        button type="submit" value=""
-            i.material-icons delete
+- if session[:fillouterror] != nil
+    p Please fill out both fields
+    -result.each do |element|
+        form action="/edit/#{element["post_id"]}/update" method="POST"
+            input name="post_title" value="#{element["post_title"]}" type="text"
+            textarea name="post_text" cols="30" rows="50" = element["post_text"]
+            input type="submit" value="Update"
+        form action="/#{element["post_id"]}/delete" method="POST"
+            button type="submit" value=""
+                i.material-icons delete
+- else 
+    -result.each do |element|
+        form action="/edit/#{element["post_id"]}/update" method="POST"
+            input name="post_title" value="#{element["post_title"]}" type="text"
+            textarea name="post_text" cols="30" rows="50" = element["post_text"]
+            input type="submit" value="Update"
+        form action="/#{element["post_id"]}/delete" method="POST"
+            button type="submit" value=""
+                i.material-icons delete

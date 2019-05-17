@@ -1,6 +1,11 @@
-- if session[:fillout] != nil
+- if session[:fillouterror] != nil
     p Please fill out both fields
-form.b action="/signup" method="post"
-    input type="text" name="username" placeholder="Username" require="required"
-    input type="password" name="password" placeholder="Password" require="required"
-    input type="submit" value="Create account" require="required"
+    form.b action="/signup" method="post"
+        input type="text" name="username" placeholder="Username" require="required"
+        input type="password" name="password" placeholder="Password" require="required"
+        input type="submit" value="Create account" require="required"
+- else
+    form.b action="/signup" method="post"
+        input type="text" name="username" placeholder="Username" require="required"
+        input type="password" name="password" placeholder="Password" require="required"
+        input type="submit" value="Create account" require="required"

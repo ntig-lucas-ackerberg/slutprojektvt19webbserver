@@ -7,6 +7,32 @@ require 'byebug'
 enable :sessions
 require_relative 'database.rb' 
 
+configure do
+    set :publicroutes, ["/", "/login", "/logout", "/signup", "/error"]
+end
+
+# before do
+#     settings.publicroutes.each do |element|
+#         if element != (request.path_info)
+#             if session[:username] != nil
+#                 redirect('request.path_info')
+#             else
+#                 halt 401
+#             end
+#         else
+#             redirect('/')
+#         end
+#     end
+# end
+
+before do
+    unless settings.publicroutes.include?(request.path)
+        if session[:username].nil?
+            redirect('/error')
+        end
+    end
+end
+
 include Mymodel
 
 # Display Starting Page
@@ -14,6 +40,10 @@ include Mymodel
 get('/') do
     posts = get_posts_with_comments()
     slim(:home, locals:{posts: posts})
+end
+
+get('/error') do
+    slim(:error)
 end
 
 # Logs the current user out of the page and updates sessions
@@ -38,7 +68,10 @@ end
 #
 # @see Model#login
 post('/login') do
-    if login(params) == true
+    correct = login(params)
+    if correct != false
+        session[:username] = params["username"]
+        session[:id] = correct
         redirect('/')
     else
         session[:wrong] = true
@@ -50,9 +83,10 @@ end
 #
 # @param [Interger] id, The id of your profile/user
 #
-# @see Model#deletepost
+# @see Model#profile
 get('/profile/:id') do
-    profile(params)
+    posts = profile(params) 
+    slim(:profile, locals:{posts: posts})
 end
 
 # Loads the route where you can signup as a new user.
@@ -72,10 +106,15 @@ end
 #
 # @see Model#signup
 post('/signup') do
-    if signup(params) == true
-        redirect('/')
+    if validate(params) != false
+        if signup(params) == true
+            redirect('/')
+        else
+            session[:fillouterror] = true
+            redirect('/signup')
+        end
     else
-        session[:fillout] = true
+        session[:fillouterror] = true
         redirect('/signup')
     end
 end
@@ -87,8 +126,13 @@ end
 #
 # @see Model#postpost
 post('/newpost') do
-    postpost(params)
-    redirect("/profile/#{session[:id]}")
+    if validate(params) != false
+        postpost(params, session[:id])
+        redirect("/profile/#{session[:id]}")
+    else
+        session[:fillouterror] = true
+        redirect('/newpost')
+    end
 end
 
 # Deletes a post and redirects to '/profile#{session[:id]} where you can see your profiles posts
@@ -108,8 +152,13 @@ end
 #
 # @see Model#insertcomment
 post('/submitcomment/:post_id') do 
-    insertcomment(params)
-    redirect('/')
+    if validate(params) != false
+        insertcomment(params, session[:id])
+        redirect('/')
+    else
+        session[:fillouterror] = true
+        redirect(back)
+    end
 end
 
 # Post the edits you've written into the page and on the current poat that you've selected
@@ -120,8 +169,14 @@ end
 #
 # @see Model#updatepost
 post('/edit/:post_id/update') do 
-    updatepost(params)
-    redirect("/profile/#{session[:id]}")
+    if validate(params) != false
+        updatepost(params)
+        redirect("/profile/#{session[:id]}")
+    else
+        session[:fillouterror] = true
+        byebug
+        redirect(back)
+    end
 end
 
 # Loads the route where you can edit thingd in your selected post
@@ -130,7 +185,8 @@ end
 #
 # @see Model#editpost
 get('/edit/:post_id') do 
-    editpost(params)
+    result = editpost(params)
+    slim(:editpost, locals:{result: result})
 end
 
 # Update the likecounter of the selected post
