@@ -38,7 +38,7 @@ include Mymodel
 # Display Starting Page
 #
 get('/') do
-    posts = get_posts_with_comments()
+    posts = get_posts_with_comments(session[:id])
     slim(:home, locals:{posts: posts})
 end
 
@@ -106,7 +106,7 @@ end
 #
 # @see Model#signup
 post('/signup') do
-    if validate(params) != false
+    if validateifempty(params) != true
         if signup(params) == true
             redirect('/')
         else
@@ -126,7 +126,7 @@ end
 #
 # @see Model#postpost
 post('/newpost') do
-    if validate(params) != false
+    if validateifempty(params) != true
         postpost(params, session[:id])
         redirect("/profile/#{session[:id]}")
     else
@@ -152,7 +152,7 @@ end
 #
 # @see Model#insertcomment
 post('/submitcomment/:post_id') do 
-    if validate(params) != false
+    if validateifempty(params) != true
         insertcomment(params, session[:id])
         redirect('/')
     else
@@ -169,12 +169,11 @@ end
 #
 # @see Model#updatepost
 post('/edit/:post_id/update') do 
-    if validate(params) != false
+    if validateifempty(params) != true
         updatepost(params)
         redirect("/profile/#{session[:id]}")
     else
         session[:fillouterror] = true
-        byebug
         redirect(back)
     end
 end
@@ -195,7 +194,11 @@ end
 #
 # @see Model#likepost
 post('/likepost/:post_id') do
-    likepost(params)
+    if validateifalreadythere(params, session[:id]) != true
+        likepost(params, session[:id])
+    else
+        session[:likealreadythere] = true
+    end
     redirect('/')
 end
 

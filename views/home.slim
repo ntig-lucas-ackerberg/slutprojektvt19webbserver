@@ -11,7 +11,7 @@
     article.post
         h2 = element["post_title"]
         p = element["post_text"]
-        p = "Like counter: #{element["dislikecounter"]}"
+
         a href="/profile/#{element["author_id"]}" = "By #{element["username"]}"
         -if session[:username] != nil
             form action="/likepost/#{element["post_id"]}" method="post"
@@ -33,14 +33,14 @@
                             h4 Comment post
                             textarea type="text" name="comment_text" rows="12" cols="60 " placeholder="Bullshit comment" required="required"
                             input type="submit" value="Comment"
+        .like
+            - if session[:username] != nil
+                - if session[:likealreadythere] != true
+                    - element["likes"].each do |like|
+                        p You've liked this post
+                - else 
+                    p You have already liked this post
+
         .comment1
             - element["comments"].each do |comment|
                 p = comment["comment_text"]
-                h3 = "Like counter: #{comment["dislikecount"]}"
-                -if session[:username] != nil
-                    form action="/likecomment/#{comment["comment_id"]}" method="post"
-                        button.like type="submit" onclick="alert('You liked this comment')"
-                            p like
-                    form action="/dislikecomment/#{comment["comment_id"]}" method="post"
-                        button.dislike type="submit" onclick="alert('You disliked this comment')"
-                            p dislike
