@@ -122,7 +122,7 @@ module Mymodel
         db = getdb()
         db.results_as_hash = true
         result = db.execute("SELECT * from likes WHERE author_id = ?", user_id)
-        if result != nil
+        if result != []
             return true
         else 
             return false

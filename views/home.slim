@@ -14,12 +14,16 @@
 
         a href="/profile/#{element["author_id"]}" = "By #{element["username"]}"
         -if session[:username] != nil
-            form action="/likepost/#{element["post_id"]}" method="post"
-                button.like type="submit" onclick="alert('You liked this post')"
-                    p like
-            form action="/dislikepost/#{element["post_id"]}" method="post"
-                button.dislike type="submit" onclick="alert('You disliked this post')"
-                    p dislike
+            -if session[:likealreadythere] == true
+                    button.like type="button" onclick="alert('You already liked this post')"
+                        p like
+            - else 
+                form action="/likepost/#{element["post_id"]}" method="post"
+                    button.like type="submit" onclick="alert('You liked this post')"
+                        p like
+                form action="/dislikepost/#{element["post_id"]}" method="post"
+                    button.dislike type="submit" onclick="alert('You disliked this post')"
+                        p dislike
         - if session[:username] != nil
                 i.show-comment-btn class="material-icons" data-post-id="#{element["post_id"]}" insert_comment
                 .comments data-post-id="#{element["post_id"]}"
@@ -35,11 +39,8 @@
                             input type="submit" value="Comment"
         .like
             - if session[:username] != nil
-                - if session[:likealreadythere] != true
                     - element["likes"].each do |like|
                         p You've liked this post
-                - else 
-                    p You have already liked this post
 
         .comment1
             - element["comments"].each do |comment|
